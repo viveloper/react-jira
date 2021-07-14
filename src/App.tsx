@@ -1,39 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Login from './components/Login';
+import Home from './components/Home';
+import { firebase } from './firebase';
 
 interface AppProps {}
 
 function App({}: AppProps) {
-  // Create the count state.
-  const [count, setCount] = useState(0);
-  // Create the counter (+1 every second).
+  const [isLogin, setIsLogin] = useState(false);
+
   useEffect(() => {
-    const timer = setTimeout(() => setCount(count + 1), 1000);
-    return () => clearTimeout(timer);
-  }, [count, setCount]);
-  // Return the App component.
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log('login user', user);
+        const uid = user.uid;
+        setIsLogin(true);
+      } else {
+        // User is signed out
+        console.log('logout user');
+        setIsLogin(false);
+      }
+    });
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <p>
-          Page has been open for <code>{count}</code> seconds.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </p>
-      </header>
+      {!isLogin && <Login />}
+      {isLogin && <Home />}
     </div>
   );
 }
