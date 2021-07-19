@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
+import { useAppDispatch } from '../store';
+import { signin } from '../store/user/userSlice';
 import { firebase } from '../firebase';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  // The `state` arg is correctly typed as `RootState` already
+  const dispatch = useAppDispatch();
 
   const onEmailChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setEmail(e.target.value);
@@ -19,6 +24,7 @@ export default function Login() {
         .auth()
         .signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
+      dispatch(signin(user?.uid ?? ''));
       console.log('user', user);
     } catch (error) {
       const errorCode = error.code;
