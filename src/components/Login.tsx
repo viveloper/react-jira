@@ -24,8 +24,12 @@ export default function Login() {
         .auth()
         .signInWithEmailAndPassword(email, password);
       const user = userCredential.user;
-      dispatch(signin(user?.uid ?? ''));
-      console.log('user', user);
+      if (user) {
+        dispatch(signin({ uid: user.uid, email: user.email ?? '' }));
+        console.log('user', user);
+      } else {
+        // TODO: user is nullable
+      }
     } catch (error) {
       const errorCode = error.code;
       const errorMessage = error.message;
