@@ -4,25 +4,12 @@ import './App.css';
 import Login from './components/Login';
 import Home from './components/Home';
 import { firebase } from './firebase';
+import { useAppSelector } from './store';
 
 interface AppProps {}
 
 function App({}: AppProps) {
-  const [isLogin, setIsLogin] = useState(false);
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log('login user', user);
-        const uid = user.uid;
-        setIsLogin(true);
-      } else {
-        // User is signed out
-        console.log('logout user');
-        setIsLogin(false);
-      }
-    });
-  }, []);
+  const isLogin = useAppSelector(({ user }) => user.isLogin);
 
   return (
     <div className="App">
