@@ -3,8 +3,14 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './App';
 import { store } from './store';
+import { worker } from './mocks/browser';
 
 import './index.css';
+
+if (import.meta.env.NODE_ENV === 'development') {
+  // const { worker } = require('./mocks/browser');
+  worker.start();
+}
 
 ReactDOM.render(
   <React.StrictMode>
