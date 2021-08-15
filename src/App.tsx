@@ -2,12 +2,11 @@ import React from 'react';
 import Login from './components/Login';
 import Home from './components/Home';
 import { firebase } from './firebase';
-import { useAppSelector } from './store';
 
 interface AppProps {}
 
 function App({}: AppProps) {
-  const isLogin = useAppSelector(({ user }) => user.isLogin);
+  const isLogin = false;
 
   return (
     <div className="App">

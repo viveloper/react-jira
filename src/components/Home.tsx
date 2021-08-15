@@ -1,12 +1,7 @@
 import React, { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../store';
-import { signout } from '../store/user/userSlice';
-import { firebase } from '../firebase';
 import axios from 'axios';
 
 export default function Home() {
-  const { email } = useAppSelector(({ user }) => user);
-
   useEffect(() => {
     axios
       .get('/sample')
@@ -18,16 +13,12 @@ export default function Home() {
       });
   }, []);
 
-  const dispatch = useAppDispatch();
-  const onLogout = () => {
-    firebase.auth().signOut();
-    dispatch(signout());
-  };
+  const onLogout = () => {};
 
   return (
     <div>
       <header>
-        <span>{email}</span>
+        <span>{'Email'}</span>
         <button onClick={onLogout}>Logout</button>
       </header>
       <div>Home Page</div>
