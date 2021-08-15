@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
 import Login from './components/Login';
 import Home from './components/Home';
 import { firebase } from './firebase';

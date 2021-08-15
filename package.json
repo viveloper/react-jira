@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build",
+    "start": "concurrently \"snowpack dev\" \"npx tailwindcss -o public/tailwind.css --watch\"",
+    "build": "npx tailwindcss -o public/tailwind.css && snowpack build",
     "test": "web-test-runner \"src/**/*.test.tsx\"",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
     "lint": "prettier --check \"src/**/*.{js,jsx,ts,tsx}\""
@@ -13,12 +13,14 @@
     "firebase": "^8.7.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-query": "^3.19.6",
     "react-redux": "^7.2.4",
-    "redux": "^4.1.0",
-    "redux-observable": "^2.0.0"
+    "recoil": "^0.4.0",
+    "redux": "^4.1.0"
   },
   "devDependencies": {
     "@snowpack/plugin-dotenv": "^2.1.0",
+    "@snowpack/plugin-postcss": "^1.4.3",
     "@snowpack/plugin-react-refresh": "^2.5.0",
     "@snowpack/plugin-typescript": "^1.2.1",
     "@snowpack/web-test-runner-plugin": "^0.2.2",
@@ -30,9 +32,12 @@
     "@types/snowpack-env": "^2.3.3",
     "@web/test-runner": "^0.13.3",
     "chai": "^4.3.4",
+    "concurrently": "^6.2.1",
     "msw": "^0.34.0",
+    "postcss": "^8.3.6",
     "prettier": "^2.2.1",
     "snowpack": "^3.3.7",
+    "tailwindcss": "^2.2.7",
     "typescript": "^4.2.4"
   },
   "msw": {

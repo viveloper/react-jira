@@ -28,16 +28,14 @@ Run with the `--watch` flag (`npm test -- --watch`) to run in interactive watch 
 
 ### React + Typescript
 
-### Redux + Redux Toolkit + Redux Observable
+### Recoil
+
+### React Query
+
+### Tailwind CSS
 
 ### Snowpack
 
-### MSW(Mock Service Worker)
+### MSW (Mock Service Worker)
 
 ### Code Split
-
-### React Suspense
-
-### Material-UI
-
-### Firebase
