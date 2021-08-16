@@ -1,18 +1,22 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
+import { useSetRecoilState } from 'recoil';
+import type { LoginResponse } from 'src/mocks/handlers';
+import { userState } from '../state/user';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmit, setIsSubmit] = useState(false);
+  const setUser = useSetRecoilState(userState);
 
   // Queries
   const { data, isFetching, isError } = useQuery(
     'login',
     async () => {
       try {
-        const res = await axios.post('/login', {
+        const res = await axios.post<LoginResponse>('/login', {
           email,
           password,
         });
@@ -39,13 +43,24 @@ export default function Login() {
     {
       enabled: isSubmit,
       refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data) {
+          setUser({
+            email: data.email,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+            isLogin: true,
+          });
+        }
+      },
+      onError: (err) => {
+        // TODO: error handling
+      },
       onSettled: () => {
         setIsSubmit((prev) => !prev);
       },
     },
   );
-
-  console.log(data);
 
   const onEmailChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setEmail(e.target.value);
