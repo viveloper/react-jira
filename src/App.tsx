@@ -1,18 +1,18 @@
 import React from 'react';
+import { useRecoilValue } from 'recoil';
 import Login from './components/Login';
 import Home from './components/Home';
-import { firebase } from './firebase';
-import { useAppSelector } from './store';
+import { userState } from './state/user';
 
 interface AppProps {}
 
 function App({}: AppProps) {
-  const isLogin = useAppSelector(({ user }) => user.isLogin);
+  const user = useRecoilValue(userState);
 
   return (
     <div className="App">
-      {!isLogin && <Login />}
-      {isLogin && <Home />}
+      {!user.isLogin && <Login />}
+      {user.isLogin && <Home />}
     </div>
   );
 }

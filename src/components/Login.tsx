@@ -1,14 +1,66 @@
+import axios from 'axios';
 import React, { useState } from 'react';
-import { useAppDispatch } from '../store';
-import { signin } from '../store/user/userSlice';
-import { firebase } from '../firebase';
+import { useQuery } from 'react-query';
+import { useSetRecoilState } from 'recoil';
+import type { LoginResponse } from 'src/mocks/handlers';
+import { userState } from '../state/user';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
+  const setUser = useSetRecoilState(userState);
 
-  // The `state` arg is correctly typed as `RootState` already
-  const dispatch = useAppDispatch();
+  // Queries
+  const { data, isFetching, isError } = useQuery(
+    'login',
+    async () => {
+      try {
+        const res = await axios.post<LoginResponse>('/login', {
+          email,
+          password,
+        });
+        return res.data;
+      } catch (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+        }
+        console.log(error.config);
+      }
+    },
+    {
+      enabled: isSubmit,
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        if (data) {
+          setUser({
+            email: data.email,
+            accessToken: data.accessToken,
+            refreshToken: data.refreshToken,
+            isLogin: true,
+          });
+        }
+      },
+      onError: (err) => {
+        // TODO: error handling
+      },
+      onSettled: () => {
+        setIsSubmit((prev) => !prev);
+      },
+    },
+  );
 
   const onEmailChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setEmail(e.target.value);
@@ -20,23 +72,7 @@ export default function Login() {
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
-    try {
-      const userCredential = await firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password);
-      const user = userCredential.user;
-      if (user) {
-        dispatch(signin({ uid: user.uid, email: user.email ?? '' }));
-        console.log('user', user);
-      } else {
-        // TODO: user is nullable
-      }
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log('errorCode', errorCode);
-      console.log('errorMessage', errorMessage);
-    }
+    setIsSubmit(true);
   };
 
   return (
